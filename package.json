@@ -1,0 +1,41 @@
+{
+  "name": "nodedom",
+  "version": "1.0.0",
+  "description": "Jinx自我使用的服务器",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon --harmony index.js",
+    "check": "cross-env NODE_ENV=production nodemon --harmony index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "js"
+  ],
+  "author": "Jinx",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "config-lite": "^3.0.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "cookie-session": "^1.4.0",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.2",
+    "formidable": "^2.0.1",
+    "md5": "^2.3.0",
+    "mysql": "^2.18.1",
+    "redis": "^3.1.2",
+    "svg-captcha": "^1.4.0"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-plugin-transform-export-extensions": "^6.22.0"
+  }
+}
