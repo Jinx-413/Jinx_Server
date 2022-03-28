@@ -7,7 +7,7 @@
  * @returns {*}
  */
 export function userExistMapper(userName) {
-  return `SELECT password FROM sys_user WHERE user_name='${userName}';`
+  return `SELECT id,password FROM sys_user WHERE user_name='${userName}';`
 }
 
 /**

@@ -5,6 +5,7 @@ import ResponseStatus from '../../utils/responseStatus'
 import adminVerify from '../../verify/admin'
 import readisUtils from '../../utils/redis'
 import * as adminMapper from '../../mapper/admin'
+import JsonWebTokenUtils from '../../utils/jwt'
 
 /**
  * @description 系统基础模块
@@ -52,13 +53,28 @@ class Admin {
 
         // 判断用户名是否存在
         const sql_user = adminMapper.userExistMapper(userName)
-        mysql.connection.query(sql_user, (err, result) => {
+        mysql.connection.query(sql_user, async(err, result) => {
           if (!err) {
             if (result.length) {
               // 判断用户名密码是否正确
               if (md5(password) === result[0].password) {
-                // TODO 登录成功 返回token
-                new ResponseStatus(res, { message: '登录成功' }).success()
+                // 登录成功 返回token
+                const _id = result[0].id.toString()
+                const jwt = new JsonWebTokenUtils({ _id })
+                const token = jwt.generateToken()
+
+                // 存到redis
+                await readisUtils.client.set(`jwt_${_id}`, token, err => {
+                  if (!err) {
+                    new ResponseStatus(res, {
+                      message: '登录成功',
+                      data: {
+                        token
+                      }
+                    }).success()
+                  }
+                })
+                readisUtils.client.expire(`jwt_${_id}`, 36288000) // 7天后清除token
               } else {
                 new ResponseStatus(res, { message: '用户名或密码错误' }).error()
                 return
