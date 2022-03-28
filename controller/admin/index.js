@@ -74,7 +74,7 @@ class Admin {
                     }).success()
                   }
                 })
-                readisUtils.client.expire(`jwt_${_id}`, 36288000) // 7天后清除token
+                readisUtils.client.expire(`jwt_${_id}`, 604800) // 7天后清除token
               } else {
                 new ResponseStatus(res, { message: '用户名或密码错误' }).error()
                 return
