@@ -13,7 +13,7 @@ export default class ResponseStatus {
     this.data = data
   }
   success() {
-    this.response.send({
+    this.response.status(200).send({
       code: 200,
       message: this.message,
       type: this.type,
@@ -21,8 +21,14 @@ export default class ResponseStatus {
     })
   }
   error() {
-    this.response.send({
+    this.response.status(200).send({
       code: 500,
+      message: this.message
+    })
+  }
+  unpermission() {
+    this.response.status(401).send({
+      code: 401,
       message: this.message
     })
   }

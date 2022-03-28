@@ -39,21 +39,17 @@ class JsonWebTokenUtils {
    * @memberof JsonWebTokenUtils
    */
   verifyToken() {
-    const data = this.data
-    const cert = fs.readFileSync(path.join(__dirname, '../bin/public_key.pem')) // 公钥 可以自己生成
-    let res
-    try {
-      const result = jwt.verify(data, cert, { algorithm: ['RS256'] }) || {}
-      const { expiresIn = 0 } = result
-      const current = Math.floor(Date.now() / 1000)
-      if (current <= expiresIn) {
-        res = result.data || {}
-      }
-    } catch (error) {
-      res = 'err'
-    }
-
-    return res
+    const token = this.data
+    const cert = fs.readFileSync(path.join(__dirname, '../bin/private_key.pem')) // 公钥 可以自己生成
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, cert, (err, decode) => {
+        if (!err) {
+          resolve(decode)
+        } else {
+          reject(err)
+        }
+      })
+    })
   }
 }
 
