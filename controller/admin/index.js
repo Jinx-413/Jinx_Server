@@ -34,56 +34,69 @@ class Admin {
     const form = new Formidable.IncomingForm()
     form.parse(req, async(err, fields) => {
       if (!err) {
-        const { userName, password } = fields
+        const { userName, password, captcha, uuid } = fields
 
-        // 是否输入用户名密码
-        try {
-          if (!userName) {
-            throw new Error('请输入用户名')
-          } else if (!password) {
-            throw new Error('请输入密码')
-          }
-        } catch (error) {
-          new ResponseStatus(res, { message: error.message }).error()
+        if (!uuid) {
+          new ResponseStatus(res, { message: 'uuid不能为空' }).error()
           return
         }
 
-        const mysql = new MysqlConnection()
-        mysql.connection.connect()
-
-        // 判断用户名是否存在
-        const sql_user = adminMapper.userExistMapper(userName)
-        mysql.connection.query(sql_user, async(err, result) => {
+        readisUtils.client.get(`captcha-code-${uuid}`, async(err, captcha_code) => {
           if (!err) {
-            if (result.length) {
-              // 判断用户名密码是否正确
-              if (md5(password) === result[0].password) {
-                // 登录成功 返回token
-                const _id = result[0].id.toString()
-                const jwt = new JsonWebTokenUtils({ _id })
-                const token = jwt.generateToken()
-
-                // 存到redis
-                await readisUtils.client.set(`jwt_${_id}`, token, err => {
-                  if (!err) {
-                    new ResponseStatus(res, {
-                      message: '登录成功',
-                      data: {
-                        token
-                      }
-                    }).success()
-                  }
-                })
-                readisUtils.client.expire(`jwt_${_id}`, 604800) // 7天后清除token
-              } else {
-                new ResponseStatus(res, { message: '用户名或密码错误' }).error()
-                return
+            // 是否输入用户名密码
+            try {
+              if (!userName) {
+                throw new Error('请输入用户名')
+              } else if (!password) {
+                throw new Error('请输入密码')
+              } else if (!captcha) {
+                throw new Error('请输入验证码')
+              } else if (String(captcha_code).toLocaleLowerCase() !== String(captcha).toLocaleLowerCase()) {
+                throw new Error('您输入的验证码不正确')
               }
-            } else {
-              new ResponseStatus(res, { message: '该用户不存在' }).error()
+            } catch (error) {
+              new ResponseStatus(res, { message: error.message }).error()
               return
             }
-            mysql.connection.end()
+
+            const mysql = new MysqlConnection()
+            mysql.connection.connect()
+
+            // 判断用户名是否存在
+            const sql_user = adminMapper.userExistMapper(userName)
+            mysql.connection.query(sql_user, async(err, result) => {
+              if (!err) {
+                if (result.length) {
+                  // 判断用户名密码是否正确
+                  if (md5(password) === result[0].password) {
+                    // 登录成功 返回token
+                    const _id = result[0].id.toString()
+                    const jwt = new JsonWebTokenUtils({ _id })
+                    const token = jwt.generateToken()
+
+                    // 存到redis
+                    await readisUtils.client.set(`jwt_${_id}`, token, err => {
+                      if (!err) {
+                        new ResponseStatus(res, {
+                          message: '登录成功',
+                          data: {
+                            token
+                          }
+                        }).success()
+                      }
+                    })
+                    readisUtils.client.expire(`jwt_${_id}`, 604800) // 7天后清除token
+                  } else {
+                    new ResponseStatus(res, { message: '用户名或密码错误' }).error()
+                    return
+                  }
+                } else {
+                  new ResponseStatus(res, { message: '该用户不存在' }).error()
+                  return
+                }
+                mysql.connection.end()
+              }
+            })
           }
         })
       }
