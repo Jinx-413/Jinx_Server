@@ -1,4 +1,4 @@
-import formidable from 'formidable'
+import Formidable from 'formidable'
 import md5 from 'md5'
 import MysqlConnection from '../../utils/mysql'
 import ResponseStatus from '../../utils/responseStatus'
@@ -31,7 +31,7 @@ class Admin {
    * @memberof Admin
    */
   async login(req, res, next) {
-    const form = new formidable.IncomingForm()
+    const form = new Formidable.IncomingForm()
     form.parse(req, async(err, fields) => {
       if (!err) {
         const { userName, password } = fields
@@ -103,7 +103,7 @@ class Admin {
    * @memberof Admin
    */
   async userExist(req, res) {
-    const form = new formidable.IncomingForm()
+    const form = new Formidable.IncomingForm()
     form.parse(req, async(err, fields) => {
       if (!err) {
         const isUser = await this.userExistMethods(fields.userName)
@@ -150,7 +150,7 @@ class Admin {
    * @memberof Admin
    */
   async register(req, res, next) {
-    const form = new formidable.IncomingForm()
+    const form = new Formidable.IncomingForm()
     form.parse(req, async(err, fields) => {
       if (!err) {
         const { userName, password, confirmPassword, captcha, uuid } = fields
