@@ -3,6 +3,12 @@ import * as Redis from 'redis'
 import configLite from 'config-lite'
 const redisDbconfig = configLite(__dirname).redis
 
+/**
+ * @description redeis工具类
+ * @author Jinx
+ * @date 2022-03-29 15:43:53
+ * @class ReadisUtils
+ */
 class ReadisUtils {
   constructor() {
     this.Redis = Redis
@@ -14,6 +20,12 @@ class ReadisUtils {
     this.client = Redis.createClient(this.RDS_PROT, this.RDS_HOST)
   }
 
+  /**
+   * @description redis初始化
+   * @author Jinx
+   * @date 2022-03-29 15:44:06
+   * @memberof ReadisUtils
+   */
   init() {
     this.client.on('ready', res => {
       console.log('redis ready!')

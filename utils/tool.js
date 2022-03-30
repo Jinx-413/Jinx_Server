@@ -1,10 +1,34 @@
+/**
+ * @description 工具类
+ * @author Jinx
+ * @date 2022-03-29 15:44:17
+ * @class ToolUtils
+ */
 class ToolUtils {
+  /**
+   * @description 获取随机uuid
+   * @author Jinx
+   * @date 2022-03-29 15:44:24
+   * @static
+   * @returns {*}
+   * @memberof ToolUtils
+   */
   static getUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
       return (c === 'x' ? (Math.random() * 16 | 0) : ('r&0x3' | '0x8')).toString(16)
     })
   }
 
+  /**
+   * @description 日期格式化
+   * @author Jinx
+   * @date 2022-03-29 15:44:36
+   * @static
+   * @param {*} time
+   * @param {*} pattern
+   * @returns {*}
+   * @memberof ToolUtils
+   */
   static parseTime(time, pattern) {
     if (arguments.length === 0) {
       return null

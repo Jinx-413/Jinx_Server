@@ -14,7 +14,7 @@ class JsonWebTokenUtils {
   }
 
   /**
-   * @description 生产token
+   * @description 生成token
    * @author Jinx
    * @date 2022-03-28 09:24:23
    * @returns {*}
