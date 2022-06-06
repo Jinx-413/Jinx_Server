@@ -6,6 +6,7 @@ import adminVerify from '../../verify/admin'
 import readisUtils from '../../utils/redis'
 import * as adminMapper from '../../mapper/admin'
 import JsonWebTokenUtils from '../../utils/jwt'
+import ToolUtils from '../../utils/tool'
 
 /**
  * @description 系统基础模块
@@ -211,7 +212,12 @@ class Admin {
             const mysql = new MysqlConnection()
             mysql.connection.connect()
 
-            const sql_register = adminMapper.registerMapper({ userName, password: md5(password) })
+            const sql_register = adminMapper.registerMapper({
+              userName,
+              password: md5(password),
+              createTime: ToolUtils.parseTime(new Date()),
+              createBy: 'register'
+            })
 
             mysql.connection.query(sql_register.addSql, sql_register.addSqlParams, (err, result) => {
               if (!err) {

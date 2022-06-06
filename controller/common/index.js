@@ -61,7 +61,7 @@ class Common {
       }
     })
 
-    readisUtils.client.expire(`captcha-code-${uuid}`, 60) // 一分钟后清除二维码
+    readisUtils.client.expire(`captcha-code-${uuid}`, 60 * 5) // 一分钟后清除二维码
   }
 
   /**
